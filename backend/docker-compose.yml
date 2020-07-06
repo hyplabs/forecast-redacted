@@ -1,0 +1,79 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:12
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=forecast
+      - POSTGRES_PASSWORD=dev_postgres_password
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  cache:
+    image: redis:5
+    expose:
+      - 6379
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      - cache
+    environment:
+      - TWILIO_ACCOUNT_SID
+      - TWILIO_AUTH_TOKEN
+      - TWILIO_FROM_PHONE_NUMBER
+      - SENDGRID_API_KEY
+      - SENDGRID_FROM_EMAIL
+      - FRONTEND_URL
+
+      # these are technically secrets, but don't really need to be kept secret in dev mode (which Docker Compose is for),
+      # so we'll just hardcode it here for simplicity (though the values on prod should definitely still be kept secret)
+      - FLASK_SECRET_KEY=dev_flask_secret
+
+      # variables to be provided by infra
+      - DATABASE_URL=postgresql://forecast:dev_postgres_password@db/forecast
+      - REDIS_URL=redis://cache
+    volumes:
+      - .:/app/backend
+  price_updater:
+    build: .
+    command: ["python3", "price_updater.py"]
+    depends_on:
+      - db
+      - cache
+    environment:
+      # variables to be provided by infra
+      - DATABASE_URL=postgresql://forecast:dev_postgres_password@db/forecast
+      - REDIS_URL=redis://cache
+    volumes:
+      - .:/app/backend
+  admin:
+    build: .
+    ports:
+      - "8888:8888"
+    command: ["gunicorn", "admin:app", "--pythonpath", "..", "--bind", "0.0.0.0:8888", "--access-logfile", "-"]
+    working_dir: /app/backend/admin
+    depends_on:
+      - db
+      - cache
+    environment:
+      - ADMIN_URL
+      - ADMIN_USERS
+
+      - DISABLE_ADMIN_WEBAUTHN=YES_REALLY_IM_SURE
+
+      # these are technically secrets, but don't really need to be kept secret in dev mode (which Docker Compose is for),
+      # so we'll just hardcode it here for simplicity (though the values on prod should definitely still be kept secret)
+      - ADMIN_FLASK_SECRET_KEY=dev_admin_flask_secret
+
+      # variables to be provided by infra
+      - DATABASE_URL=postgresql://forecast:dev_postgres_password@db/forecast
+      - REDIS_URL=redis://cache
+    volumes:
+      - .:/app/backend
+  
+volumes:
+  db_data:

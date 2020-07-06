@@ -1,0 +1,6 @@
+.DS_Store
+.vscode
+.mypy_cache
+venv
+__pycache__
+config.sh

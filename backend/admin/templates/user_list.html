@@ -1,0 +1,23 @@
+{% extends 'admin/model/list.html' %}
+
+{% block head_tail %}
+    {{ super() }}
+
+<style>
+.helper-buttons {
+    margin: 1em auto;
+}
+</style>
+{% endblock %}
+
+{% block brand %}
+    {{ super() }}
+    <div class="row helper-buttons">
+        <a href="." class="btn btn-primary">All Users</a>
+        <a href=".?flt0_37=HQ" class="btn btn-primary">HQ</a>
+        <a href=".?flt0_37=SOLE_DISTRIBUTOR" class="btn btn-primary">Sole Distributors</a>
+        <a href=".?flt0_37=PARTNER" class="btn btn-primary">Branches</a>
+        <a href=".?flt0_37=FRANCHISEE" class="btn btn-primary">Franchisees</a>
+        <a href=".?flt0_37=REGULAR_USER" class="btn btn-primary">Regular Users</a>
+    </div>
+{% endblock %}

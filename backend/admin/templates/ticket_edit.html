@@ -1,0 +1,12 @@
+{% extends 'admin/model/edit.html' %}
+
+{% block body %}
+    {% if model.status|string == "TicketStatus.RESOLVED"%}
+    <div class="jumbotron warning" style="background-color: #f2dede;">
+        <h2 class="text-center">Z ZZZ ZZ ZZZZZZZ</h2>
+    </div>
+    {% endif %}
+    {% block edit_form %}
+        {{ super() }}
+    {% endblock %}
+{% endblock %}

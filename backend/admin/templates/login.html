@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript">
+        function arrayBufferToHex(arrayBuffer) {
+            return [...new Uint8Array(arrayBuffer)].map(b => b.toString(16).padStart (2, '0')).join('');
+        }
+
+        function arrayBufferToBase64(arrayBuffer) {
+            return btoa(String.fromCharCode(...new Uint8Array(arrayBuffer))).replace(/\+/g, "-").replace(/\//g, "_");
+        }
+
+        function base64ToUint8Array(input) {
+            const BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+            input = input.replace(/=+$/g, '');  // strip off padding
+            input = input.replace(/-/g, "+").replace(/_/g, "/");
+            const bytes = parseInt((input.length / 4) * 3, 10);
+            const result = new Uint8Array(bytes);
+            for (let i = 0, j = 0; i < bytes; i += 3, j += 4) {
+                const enc1 = BASE64_CHARS.indexOf(input.charAt(j));
+                const enc2 = BASE64_CHARS.indexOf(input.charAt(j + 1));
+                const enc3 = BASE64_CHARS.indexOf(input.charAt(j + 2));
+                const enc4 = BASE64_CHARS.indexOf(input.charAt(j + 3));
+                const chr1 = (enc1 << 2) | (enc2 >> 4);
+                const chr2 = ((enc2 & 0xFF) << 4) | (enc3 >> 2);
+                const chr3 = ((enc3 & 0x03) << 6) | enc4;
+
+                result[i] = chr1;
+                if (enc3 != 64) { result[i + 1] = chr2; }
+                if (enc4 != 64) { result[i + 2] = chr3; }
+            }
+            return result;
+        }
+
+        async function loginUser(username, password) {
+            if (typeof username !== 'string') { throw new Error(username); }
+            if (typeof password !== 'string') { throw new Error(password); }
+
+            // obtain a challenge from the server and ask the authenticator to sign their answer to the challenge
+            const loginStartResult = await (await fetch("/auth/login_start", {method: "POST", credentials: 'include', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({username: username, password: password})})).json();
+            if (loginStartResult.status !== 'success') { throw new Error(JSON.stringify(loginStartResult)); }
+            const credentialRequestOptions = loginStartResult.options;
+            if (Object.entries(credentialRequestOptions) == 0) {  // WebAuthn disabled, just use username/password
+                return true;
+            }
+            credentialRequestOptions.challenge = base64ToUint8Array(credentialRequestOptions.challenge);
+            credentialRequestOptions.allowCredentials.forEach(descriptor => { descriptor.id = base64ToUint8Array(descriptor.id); });
+            let credential;
+            try {
+                credential = await navigator.credentials.get({publicKey: credentialRequestOptions});
+            } catch (e) {
+                if (e instanceof DOMException) { return false; } // operation cancelled
+                throw e;
+            }
+
+            // send the signed challenge response to the server to complete login
+            const assertionResponse = {
+                id: credential.id,
+                userHandle: username,
+                type: credential.type,
+                authData: arrayBufferToBase64(credential.response.authenticatorData),
+                clientData: arrayBufferToBase64(credential.response.clientDataJSON),
+                signature: arrayBufferToHex(credential.response.signature),
+            };
+            const loginResult = await (await fetch('/auth/login', {method: 'POST', credentials: 'include', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(assertionResponse)})).json();
+            if (loginResult.status !== 'success') { throw new Error(JSON.stringify(loginResult)); }
+            return true;
+        };
+
+        async function registerUser(username, password) {
+            if (typeof username !== 'string') { throw new Error(username); }
+            if (typeof password !== 'string') { throw new Error(password); }
+
+            // obtain a challenge from the server and ask the authenticator to create a credential keypair based on this challenge
+            const registerStartResult = await (await fetch("/auth/register_start", {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify({username: username, password: password})})).json();
+            if (registerStartResult.status !== 'success') { throw new Error(JSON.stringify(registerStartResult)); }
+            const makeCredentialOptions = registerStartResult.options;
+            makeCredentialOptions.challenge = base64ToUint8Array(makeCredentialOptions.challenge);
+            makeCredentialOptions.user.id = base64ToUint8Array(makeCredentialOptions.user.id);
+            let credential;
+            try {
+                credential = await navigator.credentials.create({publicKey: makeCredentialOptions});
+            } catch (e) {
+                if (e instanceof DOMException) { return null; } // operation cancelled
+                throw e;
+            }
+
+            // send the newly created credential keypair to the server to complete registration
+            const registrationResponse = {
+                id: credential.id,
+                type: credential.type,
+                attObj: arrayBufferToBase64(credential.response.attestationObject),
+                clientData: arrayBufferToBase64(credential.response.clientDataJSON),
+            };
+            const registerResult = await (await fetch('/auth/register', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(registrationResponse)})).json();
+            if (registerResult.status !== 'success') { throw new Error(JSON.stringify(registerResult)); }
+            return registerResult.user;
+        }
+
+        document.addEventListener("DOMContentLoaded", function (e) {
+            document.getElementById('loginform').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                document.getElementById('output').innerText = "WAITING...";
+                try {
+                    const result = await loginUser(document.getElementById('username').value, document.getElementById('password').value);
+                    if (result) {
+                        // go to the URL in the "next" query parameter
+                        var params = new URLSearchParams(window.location.search);
+                        window.location.href = params.get('next') || '/';
+                    } else {
+                        document.getElementById('output').innerText = "CANCELLED";
+                    }
+                } catch (e) {
+                    console.error(e);
+                    document.getElementById('output').innerText = "ERROR: " + e.message;
+                }
+            });
+            document.getElementById('register').addEventListener('click', async function (e) {
+                e.preventDefault();
+                document.getElementById('output').innerText = "WAITING...";
+                try {
+                    const result = await registerUser(document.getElementById('username').value, document.getElementById('password').value);
+                    document.getElementById('output').innerText = result !== null ? "SUCCESS: " + JSON.stringify(result) : "CANCELLED";
+                } catch (e) {
+                    console.error(e);
+                    document.getElementById('output').innerText = "ERROR: " + e.message;
+                }
+            });
+        });
+        document.addEventListener("DOMContentLoaded", async function(event) { 
+            const res = await (await fetch("/auth/is_disable_admin_webauthn_active")).json();
+            if (res) {
+                document.getElementById('is_disable_admin_webauthn_active_output').innerText = "DISABLE_ADMIN_WEBAUTHN option on";
+            }
+        });
+
+        </script>
+        <link rel="shortcut icon" href="https://forecast.example.com/favicon.ico">
+        <title>Yubikey Login</title>
+        <style>
+        body { font-family: sans-serif; text-align: center; padding: 5rem; }
+        input { font-size: 2rem; }
+        div { margin-top: 3rem; font-family: monospace; word-wrap: break-word; }
+        </style>
+    </head>
+    <body>
+        <h1>Yubikey Login</h1>
+        <form id="loginform">
+            <input type="text" id="username" size="8" placeholder="Username" />
+            <input type="password" id="password" size="8" placeholder="Password" />
+            <input type="submit" value="Login" />
+            <input type="button" id="register" value="Register" />
+            <div id="output"></div>
+        </form>
+        <div id="is_disable_admin_webauthn_active_output">
+        </div>
+    </body>
+</html>

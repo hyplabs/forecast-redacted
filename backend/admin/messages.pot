@@ -1,0 +1,301 @@
+# Translations template for PROJECT.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-05-13 22:40+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: admin.py:92 admin.py:138 admin.py:269 admin.py:423 admin.py:475 admin.py:509
+#: admin.py:581
+msgid "ID"
+msgstr ""
+
+#: admin.py:93 admin.py:148 admin.py:272 admin.py:752
+msgid "Phone"
+msgstr ""
+
+#: admin.py:94
+msgid "Verified"
+msgstr ""
+
+#: admin.py:95 admin.py:153 admin.py:281 admin.py:430 admin.py:482 admin.py:513
+#: admin.py:586
+msgid "Created"
+msgstr ""
+
+#: admin.py:139 admin.py:270
+msgid "Username"
+msgstr ""
+
+#: admin.py:140 admin.py:271 admin.py:476
+msgid "Name"
+msgstr ""
+
+#: admin.py:141
+msgid "Email"
+msgstr ""
+
+#: admin.py:142
+msgid "Is Email Confirmed?"
+msgstr ""
+
+#: admin.py:143
+msgid "Date Of Birth"
+msgstr ""
+
+#: admin.py:144
+msgid "Pending Commissions"
+msgstr ""
+
+#: admin.py:145
+msgid "Payable Commissions"
+msgstr ""
+
+#: admin.py:146
+msgid "Agreed To Receive Emails?"
+msgstr ""
+
+#: admin.py:147
+msgid "Agreed To Receive Texts?"
+msgstr ""
+
+#: admin.py:149
+msgid "Is Suspended?"
+msgstr ""
+
+#: admin.py:150 admin.py:273
+msgid "Bank Name"
+msgstr ""
+
+#: admin.py:151 admin.py:274
+msgid "Bank Account Number"
+msgstr ""
+
+#: admin.py:152
+msgid "Balance"
+msgstr ""
+
+#: admin.py:154 admin.py:177
+msgid "Password"
+msgstr ""
+
+#: admin.py:155 admin.py:178
+msgid "Secondary Password"
+msgstr ""
+
+#: admin.py:156
+msgid "Role"
+msgstr ""
+
+#: admin.py:157
+msgid "Partner Name"
+msgstr ""
+
+#: admin.py:158
+msgid "Referral Code"
+msgstr ""
+
+#: admin.py:159
+msgid "Referred By"
+msgstr ""
+
+#: admin.py:160
+msgid "Owned Promotion"
+msgstr ""
+
+#: admin.py:275
+msgid "Account Holder"
+msgstr ""
+
+#: admin.py:276
+msgid "Amount"
+msgstr ""
+
+#: admin.py:277
+msgid "Transaction Type"
+msgstr ""
+
+#: admin.py:278 admin.py:279
+msgid "Transaction Status"
+msgstr ""
+
+#: admin.py:280
+msgid "Notes"
+msgstr ""
+
+#: admin.py:282
+msgid "Date Approved"
+msgstr ""
+
+#: admin.py:283
+msgid "Fee"
+msgstr ""
+
+#: admin.py:424 admin.py:655 admin.py:753
+msgid "User"
+msgstr ""
+
+#: admin.py:425
+msgid "Subject"
+msgstr ""
+
+#: admin.py:426
+msgid "Message"
+msgstr ""
+
+#: admin.py:427
+msgid "Administrator"
+msgstr ""
+
+#: admin.py:428
+msgid "Administrator Response"
+msgstr ""
+
+#: admin.py:429
+msgid "Ticket Status"
+msgstr ""
+
+#: admin.py:431 admin.py:514 admin.py:587
+msgid "Updated"
+msgstr ""
+
+#: admin.py:477
+msgid "Description"
+msgstr ""
+
+#: admin.py:478
+msgid "Bet Time (Seconds)"
+msgstr ""
+
+#: admin.py:479
+msgid "Wait Time (Seconds)"
+msgstr ""
+
+#: admin.py:480
+msgid "Round Decided Threshold"
+msgstr ""
+
+#: admin.py:481
+msgid "Max Bet Amount (Won)"
+msgstr ""
+
+#: admin.py:510
+msgid "Title"
+msgstr ""
+
+#: admin.py:511
+msgid "Content"
+msgstr ""
+
+#: admin.py:512
+msgid "Views"
+msgstr ""
+
+#: admin.py:582
+msgid "Promotion Type"
+msgstr ""
+
+#: admin.py:583
+msgid "Bonus Amount"
+msgstr ""
+
+#: admin.py:584
+msgid "Betting Volume Threshold"
+msgstr ""
+
+#: admin.py:585
+msgid "User Balance Minimum"
+msgstr ""
+
+#: admin.py:656 admin.py:761
+msgid "Promotion"
+msgstr ""
+
+#: admin.py:657
+msgid "Is Promotion Redeemed?"
+msgstr ""
+
+#: admin.py:658
+msgid "Is Promotion Activated?"
+msgstr ""
+
+#: admin.py:672 admin.py:762
+msgid "Mass Change User Promotion"
+msgstr ""
+
+#: admin.py:672
+msgid "Are you sure you want to mass change UserPromotions?"
+msgstr ""
+
+#: admin.py:676
+msgid "No new promotion ID entered."
+msgstr ""
+
+#: admin.py:680
+msgid "New promotion not found."
+msgstr ""
+
+#: admin.py:694
+msgid "Successfully Changed"
+msgstr ""
+
+#: admin.py:694
+msgid "Records"
+msgstr ""
+
+#: admin.py:698
+msgid "Error "
+msgstr ""
+
+#: admin.py:753
+msgid "Member Management"
+msgstr ""
+
+#: admin.py:754
+msgid "Mass Approve Deposits"
+msgstr ""
+
+#: admin.py:755
+msgid "Mass Approve Withdrawals"
+msgstr ""
+
+#: admin.py:756
+msgid "Balance Change Records/Charge/Discharge"
+msgstr ""
+
+#: admin.py:757
+msgid "Transaction"
+msgstr ""
+
+#: admin.py:758
+msgid "Ticket"
+msgstr ""
+
+#: admin.py:759
+msgid "Exchange"
+msgstr ""
+
+#: admin.py:760
+msgid "Announcement"
+msgstr ""
+
+#: admin.py:761 admin.py:762 admin.py:763
+msgid "Promotion Management"
+msgstr ""
+
+#: admin.py:763
+msgid "User Promotion"
+msgstr ""
+

@@ -1,0 +1,21 @@
+# this file is read by AWS Amplify when we deploy the code, which then automatically deploys the frontend to forecast.example.com
+version: 1.0
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - cd frontend
+        - npm ci
+        - nvm install lts/erbium
+        - nvm use lts/erbium
+    build:
+      commands:
+        - cp src/config.prod.js src/config.js  # overwrite dev config with prod config
+        - node --expose-gc --max-old-space-size=8192 node_modules/react-scripts/scripts/build.js
+  artifacts:
+    baseDirectory: frontend/build
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - frontend/node_modules

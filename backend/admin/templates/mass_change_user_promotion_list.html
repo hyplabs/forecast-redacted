@@ -1,0 +1,25 @@
+{% extends 'admin/model/list.html' %}
+{% block list_row_actions %}
+    {{ super() }}
+{% endblock %}
+
+{% block body %}
+  <div id="here" style="padding-top: 20px; padding-bottom: 20px;">
+    <form class="form-inline">
+      <div class="form-group">
+        <label for="promotion_id">{{ _gettext('Enter the new promotion id') }}:</label>
+        <input id="promotion_id" name="promotion_id" class="form-control" type="number" placeholder="{{ _gettext('New Promotion ID') }}">
+      </div>
+    </form>
+  </div>
+  {{ super() }}
+{% endblock body %}
+
+{% block tail %}
+    {{ super() }}
+    <script type="application/javascript">
+        $("input[name='promotion_id']").appendTo($("#action_form"))
+        $("#action_form").appendTo($("#here"))
+        $("#action_form").attr("style", "")
+    </script>
+{% endblock %}

@@ -1,0 +1,7 @@
+terraform.tfstate
+terraform.tfstate.backup
+.terraform
+prod.tfvars
+devhost-key.pem
+terraform
+config.devhost.sh
